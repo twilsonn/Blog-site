@@ -1,0 +1,53 @@
+{
+  // These tasks will run in order when initializing your CodeSandbox project.
+  "setupTasks": [
+    {
+      "name": "Install Dependencies",
+      "command": "npm install"
+    }
+  ],
+
+  // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+  "tasks": {
+    "test": {
+      "name": "test",
+      "command": "npm run test",
+      "runAtStart": false
+    },
+    "build-db": {
+      "name": "build-db",
+      "command": "npm run build-db",
+      "runAtStart": false
+    },
+    "clean-db": {
+      "name": "clean-db",
+      "command": "npm run clean-db",
+      "runAtStart": false
+    },
+    "start": {
+      "name": "start",
+      "command": "npm run start",
+      "runAtStart": true
+    },
+    "tailwind:css": {
+      "name": "tailwind:css",
+      "command": "npm run tailwind:css",
+      "runAtStart": false
+    },
+    "watch": {
+      "name": "watch",
+      "command": "npm run watch",
+      "runAtStart": false
+    },
+    "dev:db": {
+      "name": "dev:db",
+      "command": "npm run dev:db",
+      "runAtStart": false
+    },
+    "dev": {
+      "name": "dev",
+      "command": "npm run dev",
+      "runAtStart": false
+    }
+  }
+}
