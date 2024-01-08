@@ -2,7 +2,6 @@ Demo: [Code Sandbox](https://codesandbox.io/p/github/twilsonn/news-site-uni-proj
 
 Note: Click on the "open in a new tab" button on the top right corner of the website container to open the full site.
 
-
 ## Running the project
 
 Install the dependencies:
@@ -44,3 +43,19 @@ Navigate to the author home page:
     password: ilovespiders123
 
 3. you will be redirect to the author home page once you click the login button.
+
+## Screenshots
+
+### Homepage
+
+![Home page](./images/home-screeen.png "Home page")
+
+### Article
+
+![Article page](./images/article.png "Article page")
+
+### Edit article page
+
+![Edit Article page](./images/edit-article.png "Edit Article page")
+
+
