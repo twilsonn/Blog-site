@@ -1,0 +1,112 @@
+<header class="prose border-b mb-6 max-w-none">
+  <h2 class="mb-3">Edit Article</h2>
+  <h3 class="pb-4">Author</h3>
+</header>
+
+<main class="prose w-full max-w-none">
+  <form id="new-post-form" class="space-y-6">
+    <div>
+
+      <label for="title" class="text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">
+        <span>Title</span>
+        <span id="error-title" class="m-0 text-sm text-red-500 font-normal text-right"></span>
+      </label>
+      <div class="mt-1">
+        <input type="text" name="title" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none" value="<%= post.title %>">
+      </div>
+    </div>
+
+    <div>
+      <label for="subtitle" class="text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">
+        <span>Subtitle</span>
+        <span id="error-subtitle" class="m-0 text-sm text-red-500 font-normal text-right"></span>
+      </label>
+      <div class="mt-1">
+        <input type="text" name="subtitle" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none" value="<%= post.subtitle %>">
+      </div>
+    </div>
+
+    <div>
+      <label for="content" class="text-sm font-medium leading-6 text-gray-900 flex items-center justify-between">
+        <span>Content</span>
+        <span id="error-content" class="m-0 text-sm text-red-500 font-normal text-right"></span>
+      </label>
+      <div class="mt-1">
+        <textarea type="text" name="content" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none max-h-[42rem] min-h-[12rem]"><%= post.content %></textarea>
+      </div>
+
+    </div>
+
+    <div class="relative flex items-start space-x-3">
+
+      <div class="flex items-center h-5">
+        <input name="is_draft" type="checkbox" class="border-gray-200 rounded text-blue-600 focus:ring-blue-500" <%= post.is_draft === 1 ? '' : 'checked'%>>
+      </div>
+
+      <label>
+        <span class="block text-sm font-semibold text-gray-800 ">Publish</span>
+        <span class="block text-sm text-gray-600">
+          Allow all users to view this article.
+        </span>
+      </label>
+
+      <span id="error-is_draft" class="m-0 text-sm text-red-500 font-normal text-right"></span>
+    </div>
+
+    <div class="flex justify-end space-x-3">
+      <a href="/author">
+        <button type="button" class="text-black py-2 px-4 rounded-md text-sm font-normal hover:underline">Cancel</button>
+      </a>
+      <button type="reset" class="bg-gray-200 text-black py-2 px-4 rounded-md text-sm">Clear</button>
+      <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md text-sm">Update</button>
+    </div>
+  </form>
+</main>
+
+<script>
+  const postId = "<%= post.id %>"
+
+  const newPostForm = document.getElementById("new-post-form")
+
+  const formElements = Array.from(newPostForm.elements).filter(element => element.hasAttribute("name"))
+
+  const createNewPost = async (event) => {
+    event.preventDefault()
+
+    const formData = Object.fromEntries(new FormData(newPostForm).entries())
+    formData.is_draft = formData.is_draft === "on"
+
+    clearErrors()
+
+    const res = await fetch(`/api/posts/${postId}`, {
+      method: "PATCH",
+      body: JSON.stringify(formData),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+
+    const data = await res.json()
+
+    if (!data.success) {
+      return displayErrors(data.errors)
+    }
+
+    return window.location.href = `/author/article/${data.id}`
+  }
+
+  const clearErrors = () => {
+    formElements.forEach((element) => {
+      document.getElementById(`error-${element.getAttribute('name')}`).innerText = ""
+    })
+  }
+
+  const displayErrors = (errors) => {
+    errors.forEach((error) => {
+      document.getElementById(`error-${error.path}`).innerText = error.msg
+    })
+  }
+
+  newPostForm.addEventListener("submit", createNewPost)
+</script>

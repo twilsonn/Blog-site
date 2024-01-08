@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog - <%- title %></title>
+
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link href="/assets/css/fontawesome.css" rel="stylesheet">
+  <link href="/assets/css/brands.css" rel="stylesheet">
+  <link href="/assets/css/solid.css" rel="stylesheet">
+  <link href="/assets/css/regular.css" rel="stylesheet">
+</head>
+
+<body class="flex w-full flex-col max-w-6xl m-auto">
+  <div class="flex w-full justify-center space-x-6 h-full">
+    <div class="h-full w-64">
+      <div class="sticky top-0">
+        <header class="prose h-24 flex items-center">
+          <h1>Blog</h1>
+        </header>
+
+        <div class="py-1.5 mb-6">
+          <% if (user) { %>
+          <p class="font-semibold"><%= user.name %> - <span class="text-blue-500 capitalize"><%= user.role %></span></p>
+          <p class="text-gray-500">@<%= user.username %></p>
+
+          <button class="py-2 text-sm" onclick="window.location.replace('/signout')">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sign Out
+          </button>
+
+          <% } else { %>
+
+          <button class="py-2 text-sm" onclick="window.location.href = '/'">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            Sign In
+          </button>
+          <% } %>
+        </div>
+
+        <nav>
+          <ul>
+            <% navigation.forEach(function(items) { %>
+            <a class="block mb-3" href="<%= items.href %>">
+              <li class="<%= items.active && "bg-gray-100" %> hover:bg-gray-200 px-3 py-1.5 rounded-lg font-semibold cursor-pointer transition-colors">
+                <%= items.label %>
+              </li>
+            </a>
+            <% }); %>
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <main class="w-full pt-10 px-6 border-x"><%- body %></main>
+  </div>
+</body>
+
+</html>

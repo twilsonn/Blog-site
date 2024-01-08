@@ -1,0 +1,236 @@
+<header class="prose border-b mb-6 pb-4 max-w-none flex items-end justify-between">
+  <div>
+    <h2 class="mt-0 mb-3">Article</h2>
+    <h3 class="mb-0">Author</h3>
+  </div>
+
+  <div>
+    <a href="/author" class="cursor-pointer flex items-center space-x-2 no-underline">
+      <i class="fa-solid fa-arrow-left"></i>
+      <p class="m-0">Back</p>
+    </a>
+  </div>
+</header>
+
+<main class="prose w-full max-w-none mb-10">
+  <div class="w-full flex justify-between">
+    <div>
+      <h1 class="m-0"><%= article.title  %></h1>
+      <h3 class="text-gray-500"><%= article.subtitle  %></h3>
+    </div>
+    <div class="text-right min-w-fit ml-6">
+      <p class="m-0"><b class="font-semibold"><%= article.author  %></b> @<%= article.author_username  %></p>
+      <p class="m-0 text-gray-500"><%= article.created_at  %></p>
+    </div>
+  </div>
+
+  <p class="whitespace-pre-wrap"><%= article.content %></p>
+
+  <div class="w-full flex items-center justify-between border-t pt-3">
+    <div>
+      Last Updated: <%= article.updated_at  %>
+    </div>
+    <div class="flex items-center">
+
+      <button id="unlike-button" class="<%= article.liked_by_user === 1 ? '' : 'hidden' %> hover:py-[2.5%] hover:scale-125 flex items-center justify-center">
+        <i class="fa-solid fa-heart"></i>
+      </button>
+
+      <button id="like-button" class="group <%= article.liked_by_user === 1 ? 'hidden' : '' %>">
+        <div class="group-hover:hidden block">
+          <i class="fa-regular fa-heart"></i>
+        </div>
+        <div class="group-hover:block hidden">
+          <i class=" fa-solid fa-heart"></i>
+        </div>
+      </button>
+
+      <p id="likes" class="m-0 ml-2"><%= article.likes  %></p>
+    </div>
+
+  </div>
+
+  <p id="error" class="text-red-500 text-right m-0 text-xs"></p>
+
+  <div>
+    <div class="border-b">
+      <h3>Comments</h3>
+    </div>
+
+    <form id="commentForm" class="hidden" onsubmit="postComment">
+      <h4>Post a comment</h4>
+
+      <textarea name="content" class="py-3 px-4 block w-full border-gray-200 rounded-md text-sm focus:border-blue-500 focus:ring-blue-500 max-h-32" rows="5"></textarea>
+
+      <div class="flex justify-end w-full mt-3 space-x-3">
+        <button type="button" class="bg-gray-200 text-black py-2 px-4 rounded-md text-sm">Clear</button>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md text-sm">Submit</button>
+      </div>
+    </form>
+
+    <div id="comments" class="mt-6 space-y-6">
+      <div class="flex items-center justify-center flex-col mt-10">
+        <img src="/images/spinner.svg" class="w-6 h-6 m-0 mb-3" alt="">
+        <span class="mr-3 m-0 font-semibold text-sm">Loading comments</span>
+      </div>
+    </div>
+
+
+  </div>
+</main>
+
+<script>
+  const isUserSignedIn = '<%= typeof user === "undefined" %>' === "false"
+  const postId = "<%= article.id %>"
+  const likeButton = document.getElementById("like-button")
+  const unlikeButton = document.getElementById("unlike-button")
+  const likes = document.getElementById("likes")
+  const error = document.getElementById("error")
+
+  const likedByUser = '<%= article.liked_by_user %>' === "1"
+  const currentLikes = parseInt('<%= article.likes %>')
+
+  const liked = likedByUser ? currentLikes : currentLikes + 1
+  const unliked = likedByUser ? currentLikes - 1 : currentLikes
+
+  console.log(currentLikes, likedByUser, liked, unliked);
+
+  let timeout;
+
+  const likePost = async () => {
+    const res = await fetch(`/api/posts/${postId}/like`, {
+      method: "POST"
+    })
+
+    const data = await res.json()
+
+    if (data.success) {
+      likeButton.classList.add("hidden")
+      unlikeButton.classList.remove("hidden")
+      likes.innerText = liked
+    } else {
+      error.innerText = "You need to be logged in to like posts!"
+
+      clearTimeout(timeout)
+
+      timeout = setTimeout(() => {
+        error.innerText = ""
+      }, 5000)
+    }
+  }
+
+  const unlikePost = async () => {
+    const res = await fetch(`/api/posts/${postId}/dislike`, {
+      method: "POST"
+    })
+    const data = await res.json()
+
+    if (data.success) {
+      unlikeButton.classList.add("hidden")
+      likeButton.classList.remove("hidden")
+      likes.innerText = unliked
+    } else {
+      error.innerText = "Unable to dislike post!"
+    }
+  }
+
+  likeButton.addEventListener("click", () => likePost())
+  unlikeButton.addEventListener("click", () => unlikePost())
+
+  // ====== comments ======
+
+  const commentsContainer = document.getElementById("comments")
+  const commentForm = document.getElementById("commentForm")
+
+  const fetchComments = async () => {
+    const res = await fetch(`/api/comments/${postId}`)
+    const data = await res.json()
+    return renderComments(data.comments)
+  }
+
+  const renderComments = (comments) => {
+    let commentsHTML
+
+    if (comments.length === 0) {
+      commentsHTML = `
+        <p class="text-sm text-center">
+          No comments yet!
+        </p>
+      `
+    } else {
+      commentsHTML = comments.reduce((acc, comment) => {
+        return acc + `
+        <div class="bg-gray-100 rounded-lg p-6 not-prose">
+          <div class="flex justify-between items-start">
+            <div class="flex items-center">
+              <p class="font-semibold mr-2">${comment.name}</p>
+              <p>@${comment.username}</p>
+            </div>
+            <p>${comment.created_at}</p>
+          </div>
+          <p class="mt-2">${comment.content}</p>
+          
+        ${comment.username === '<%= typeof user === "undefined" ? null : user.username %>' ? `
+          <div class="flex justify-end w-full">
+            <button type="button" onclick="deleteComment(${comment.id})" class='font-semibold text-red-600 hover:underline pt-2 cursor-pointer'>
+              Delete
+            </button>
+          </div>
+        ` : ""}
+        </div>
+      `
+      }, "");
+    }
+
+    if (isUserSignedIn) {
+      commentForm.classList.remove("hidden")
+    } else {}
+
+    commentsContainer.innerHTML = isUserSignedIn ? commentsHTML : `
+    <p class="text-sm text-center">
+      Sign in <span><a href="/" class="hover:text-blue-500">here</a></span> to comment on this post
+    </p>
+    ` + commentsHTML
+  }
+
+  setTimeout(() => {
+    fetchComments()
+  }, 750)
+
+  const postComment = async (event) => {
+    event.preventDefault()
+    const formData = new FormData(commentForm);
+
+    const res = await fetch(`/api/comments/${postId}`, {
+      method: "POST",
+      body: JSON.stringify(Object.fromEntries(formData.entries())),
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+
+    const data = await res.json()
+
+    document.forms.commentForm.reset()
+    return renderComments(data.comments)
+  }
+
+  const deleteComment = async (commentId) => {
+    const res = await fetch(`/api/comments/${postId}?id=${commentId}`, {
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+
+    const data = await res.json()
+
+    if (data.success) {
+      return renderComments(data.comments)
+    }
+  }
+
+  commentForm.addEventListener("submit", postComment);
+</script>

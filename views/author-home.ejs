@@ -1,0 +1,78 @@
+<header class="prose border-b mb-6 pb-4 max-w-none flex items-end justify-between">
+  <div>
+    <h2 class="mt-0 mb-3">Home</h2>
+    <h3 class="mb-0">Author</h3>
+  </div>
+
+  <div>
+    <a href="/author/new" class="bg-blue-500 text-white py-2 px-4 rounded-md text-sm no-underline font-normal cursor-pointer">Create New Draft</a>
+  </div>
+</header>
+
+<main class="prose prose-figure:unset w-full max-w-none">
+  <h2>Articles</h2>
+
+  <% if (articles && articles.length > 0) { %>
+
+  <table class="not-prose space-y-6 pb-6">
+    <thead>
+      <tr class="font-semibold border-b-2 border-gray-300">
+        <td class="py-3 px-4 whitespace-nowrap">Title</td>
+        <td class="py-3 px-4 whitespace-nowrap">Updated At</td>
+        <td class="py-3 px-4 whitespace-nowrap">Created At</td>
+        <td class="py-3 px-4 whitespace-nowrap">Publised</td>
+        <td class="py-3"></td>
+        <td class="py-3"></td>
+        <td class="py-3"></td>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% articles.forEach(function(article) { %>
+      <tr class="border-t border-gray-200">
+        <td class="py-3 px-4"><%= article.title  %></td>
+        <td class="py-3 px-4 whitespace-nowrap"><%= article.updated_at  %></td>
+        <td class="py-3 px-4 whitespace-nowrap"><%= article.created_at  %></td>
+        <td class="py-3 px-4">
+          <% if (article.is_draft === 0) { %>
+          <i class="fa-solid fa-circle-check fa-xl" style="color: #25c13f;"></i>
+          <% } else { %>
+          <i class="fa-solid fa-circle-xmark fa-xl" style="color: #d51a1a;"></i>
+          <% } %>
+        </td>
+        <td class="py-3">
+          <a href="/author/article/<%= article.id %>" class="font-semibold text-black-600 hover:underline py-2 px-4 cursor-pointer">View</a>
+        </td>
+        <td class="py-3">
+          <a href="/author/edit/<%= article.id %>" class="font-semibold text-blue-600 hover:underline py-2 px-4 cursor-pointer">Edit</a>
+        </td>
+        <td class="py-3">
+          <button type="button" onclick="deletePost('<%= article.id %>')" class="font-semibold text-red-600 hover:underline py-2 px-4 cursor-pointer">Delete</button>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+
+
+    </div>
+    <% } %>
+</main>
+
+<script>
+  const deletePost = async (postId) => {
+    console.log(postId)
+    const res = await fetch(`/api/posts/${postId}`, {
+      method: "DELETE",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+
+    const data = await res.json()
+
+    if (data.success) {
+      return window.location.reload()
+    }
+  }
+</script>

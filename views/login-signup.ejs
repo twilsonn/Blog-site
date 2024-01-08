@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - <%= title %></title>
+
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link href="/assets/css/fontawesome.css" rel="stylesheet">
+  <link href="/assets/css/brands.css" rel="stylesheet">
+  <link href="/assets/css/solid.css" rel="stylesheet">
+</head>
+
+<body class="w-full h-screen flex items-center justify-center bg-gray-100">
+
+  <main class="bg-white rounded-lg p-6 w-full max-w-xs prose">
+
+    <% if (isSignUp) { %>
+
+    <h2>Sign Up</h2>
+
+    <form method="POST" action="/signup" class="space-y-4">
+
+      <div>
+        <label for="name" class="text-sm font-medium leading-6 text-gray-900">Name</label>
+        <div class="mt-1">
+          <input type="text" name="name" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div>
+        <label for="username" class="text-sm font-medium leading-6 text-gray-900">Username</label>
+        <div class="mt-1">
+          <input type="text" name="username" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div>
+        <label for="password" class="text-sm font-medium leading-6 text-gray-900">Password</label>
+        <div class="mt-1">
+          <input type="text" name="password" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-sm font-medium leading-6 text-gray-900">Role</label>
+        <fieldset class="mt-4">
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <input type="radio" value="reader" id="reader" name="role" type="radio" checked class="h-4 w-4 border-gray-300 text-blue-500 focus:ring-blue-500">
+              <label for="reader" class="ml-3 block text-sm font-medium leading-6 text-gray-900">Reader</label>
+            </div>
+            <div class="flex items-center">
+              <input type="radio" value="author" id="author" name="role" type="radio" class="h-4 w-4 border-gray-300 text-blue-500 focus:ring-blue-500">
+              <label for="author" class="ml-3 block text-sm font-medium leading-6 text-gray-900">Author</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-3">
+        <a href="/" class="bg-gray-200 text-black py-2 px-4 rounded-md text-sm w-1/2 text-center no-underline">Login</a>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md text-sm w-1/2">Sign Up</button>
+      </div>
+    </form>
+
+    <% } else { %>
+
+    <h2>Login</h2>
+
+    <p class="text-sm">Login or go to the reader home <a href="/reader" class="hover:text-blue-500">here</a></p>
+
+    <form method="POST" action="/login" class="space-y-4">
+      <div>
+        <label for="username" class="text-sm font-medium leading-6 text-gray-900">Username</label>
+        <div class="mt-1">
+          <input type="text" name="username" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div>
+        <label for="password" class="text-sm font-medium leading-6 text-gray-900">Password</label>
+        <div class="mt-1">
+          <input type="text" name="password" class="w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 focus:outline-none sm:text-sm sm:leading-6">
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-3">
+        <a href="/?signup=true" class="bg-gray-200 text-black py-2 px-4 rounded-md text-sm w-1/2 text-center no-underline">Sign Up</a>
+        <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md text-sm w-1/2">Login</button>
+      </div>
+    </form>
+
+    <div class="absolute top-10 left-10 bg-white rounded-lg p-6 w-full max-w-xs">
+      <h3 class="mt-0">Default Users</h3>
+
+      <div class="not-prose space-y-3">
+        <div class="text-sm">
+          <p class="font-semibold">Spider Man</p>
+          <p>Username: spiderman</p>
+          <p>Password: ilovespiders123</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Hermione Granger</p>
+          <p>Username: QuillAndSpell</p>
+          <p>Password: ilovemagic</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Homer Simpson</p>
+          <p>Username: TheRealHomerSimpson</p>
+          <p>Password: beeeer</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">The Terminator</p>
+          <p>Username: T-800</p>
+          <p>Password: illbeback123</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Bilbo Baggins</p>
+          <p>Username: NotABurglar91</p>
+          <p>Password: precious</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Luke Skywalker</p>
+          <p>Username: JediKnightLuke</p>
+          <p>Password: MayTheForceBeWithYou</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Tony Stark</p>
+          <p>Username: tonystark</p>
+          <p>Password: iamironman</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Michael Scott</p>
+          <p>Username: michaelscott</p>
+          <p>Password: ilovepaper</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Sarah Connor</p>
+          <p>Username: sarahconnor</p>
+          <p>Password: terminator</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Sherlock Holmes</p>
+          <p>Username: MasterDetective</p>
+          <p>Password: dearwatson</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Alice Kingsleigh</p>
+          <p>Username: wonderland</p>
+          <p>Password: downtherabbithole</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Neville Longbottom</p>
+          <p>Username: FrogKing22</p>
+          <p>Password: ilovefrogs</p>
+        </div>
+        <div class="text-sm">
+          <p class="font-semibold">Grand Master Yoda</p>
+          <p>Username: gm_yoda</p>
+          <p>Password: iamnothisfather</p>
+        </div>
+      </div>
+
+    </div>
+
+    <% } %>
+
+  </main>
+
+</body>
+
+</html>

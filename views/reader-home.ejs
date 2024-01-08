@@ -1,0 +1,35 @@
+<header class="prose border-b mb-6 max-w-none">
+  <h2 class="mb-3">Home</h2>
+  <h3 class="pb-4">Reader</h3>
+</header>
+
+<main class="prose w-full max-w-none">
+  <h2>Articles</h2>
+
+  <% if (articles && articles.length > 0) { %>
+
+  <div class=" space-y-6 pb-6">
+    <% articles.forEach(function(article) { %>
+    <article class="w-full bg-gray-100 rounded-lg p-3 flex flex-col">
+      <div class="w-full flex justify-between">
+        <div>
+          <h3 class="m-0"><%= article.title  %></h3>
+          <h4 class="text-gray-600"><%= article.subtitle  %></h4>
+        </div>
+        <div class="text-right">
+          <p class="m-0 whitespace-nowrap">Author: <%= article.author  %></p>
+          <p class="m-0 whitespace-nowrap">Publised: <%= article.created_at  %></p>
+        </div>
+      </div>
+
+      <p class="text-justify my-1">
+        <%= String(article.content).substring(0, 155) + "..."  %>
+        <a href="<%= `/reader/article/${article.id}` %>" class="px-1.5 text-blue-600 font-semibold underline">
+          Read More
+        </a>
+      </p>
+    </article>
+    <% }); %>
+  </div>
+  <% } %>
+</main>
